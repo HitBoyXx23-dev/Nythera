@@ -6,10 +6,9 @@ const tabButtons = document.querySelectorAll(".tab-button");
 
 let currentTask = "text";
 
-// Single API Key
-const API_KEY = "sk-voidai-KfIEuDbfbBtmSGVfCwWvqYWtVKbBjmHstZZF0kTu-EUEbhb_g9oc4iynoiF-0ZArm2tlm08mXQSdhkPepBYW7n6iJ-Rj0w9hdPwt6JGj7N69WWNuS5IwIbVgJlcr-if7_PG1DQ";
+const API_KEY = "sk-voidai-A_deJiEm5lImmyrDWdFI3cA_YskQUEORXLOeDwXvHTZJmxNnHV2vZAm3YGwazezFLk4sZVa0kpVPZzH7KAisSXms18Lk24HEMtBttXM9ANDIEkXsmwtEydAkiQQ6XUxc5yRD8Q";
 
-// Models mapping
+// Models
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
@@ -29,10 +28,10 @@ tabButtons.forEach(btn=>{
     });
 });
 
-// Send button click
+// Send message
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
-    if(!message && fileUpload.files.length === 0) return;
+    if(!message && fileUpload.files.length===0) return;
 
     appendMessage("user", message);
 
@@ -46,7 +45,7 @@ sendBtn.addEventListener("click", async () => {
         ]
     };
 
-    // Handle file uploads
+    // File uploads
     if(fileUpload.files.length>0){
         body.files=[];
         for(const file of fileUpload.files){
@@ -56,15 +55,22 @@ sendBtn.addEventListener("click", async () => {
     }
 
     try{
-        const res = await fetch("https://api.voidai.app/v1/chat/completions",{
+        const res = await fetch("https://api.voidai.app/v1/chat/completions", {
             method:"POST",
-            headers:{"Content-Type":"application/json","Authorization":`Bearer ${API_KEY}`},
+            headers: {"Content-Type":"application/json","Authorization":`Bearer ${API_KEY}`},
             body: JSON.stringify(body)
         });
+
+        if(!res.ok){
+            appendMessage("bot",`HTTP Error: ${res.status}`);
+            return;
+        }
+
         const data = await res.json();
-        console.log(data);
+        console.log("API Response:", data);
 
         let output = "No response";
+
         if(currentTask==="text"||currentTask==="code"||currentTask==="advanced") output = data.choices?.[0]?.message?.content || output;
         if(currentTask==="image") output = data.choices?.[0]?.image_url || output;
         if(currentTask==="embedding") output = JSON.stringify(data.data||{});
@@ -72,6 +78,7 @@ sendBtn.addEventListener("click", async () => {
         if(currentTask==="transcription") output = data.choices?.[0]?.text || output;
 
         appendMessage("bot", output, currentTask);
+
     }catch(err){
         console.error(err);
         appendMessage("bot","Error contacting API.");
