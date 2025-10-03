@@ -6,10 +6,10 @@ const tabButtons = document.querySelectorAll(".tab-button");
 
 let currentTask = "text";
 
-// Your single API Key
-const API_KEY = "sk-voidai-KfIEuDbfbBtmSGVfCwWvqYWtVKbBjmHstZZF0kTu-EUEbhb_g9oc4iynoiF-0ZArm2tlm08mXQSdhkPepBYW7n6qJ-Rj0w9hdPwt6JGj7N69WWNuS5IwIbVgJlcr-if7_PG1DQ";
+// Single API Key
+const API_KEY = "sk-voidai-KfIEuDbfbBtmSGVfCwWvqYWtVKbBjmHstZZF0kTu-EUEbhb_g9oc4iynoiF-0ZArm2tlm08mXQSdhkPepBYW7n6iJ-Rj0w9hdPwt6JGj7N69WWNuS5IwIbVgJlcr-if7_PG1DQ";
 
-// Models
+// Models mapping
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
@@ -29,7 +29,7 @@ tabButtons.forEach(btn=>{
     });
 });
 
-// Send button
+// Send button click
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
     if(!message && fileUpload.files.length === 0) return;
@@ -38,8 +38,15 @@ sendBtn.addEventListener("click", async () => {
 
     const selectedModel = Array.isArray(modelMap[currentTask]) ? modelMap[currentTask][0] : modelMap[currentTask];
 
-    let body = { model: selectedModel, messages:[{role:"system",content:"You are a helpful assistant."},{role:"user",content:message}] };
+    let body = {
+        model: selectedModel,
+        messages:[
+            {role:"system", content:"You are a helpful assistant."},
+            {role:"user", content:message}
+        ]
+    };
 
+    // Handle file uploads
     if(fileUpload.files.length>0){
         body.files=[];
         for(const file of fileUpload.files){
@@ -80,7 +87,7 @@ function appendMessage(sender,text,task="text"){
     const timestamp = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
     if(task==="code") bubble.innerHTML = `<pre><code>${text}</code></pre><small>${timestamp}</small>`;
-    else if(task==="image") bubble.innerHTML = `<img src="${text}" alt="AI Image"><small>${timestamp}</small>`;
+    else if(task==="image") bubble.innerHTML = `<img src="${text}" alt="Image"><small>${timestamp}</small>`;
     else if(task==="speech") bubble.innerHTML = `<audio controls src="${text}"></audio><small>${timestamp}</small>`;
     else bubble.innerHTML = `${text}<small>${timestamp}</small>`;
 
