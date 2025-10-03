@@ -6,10 +6,10 @@ const tabButtons = document.querySelectorAll(".tab-button");
 
 let currentTask = "text";
 
-// Single API Key
+// Your single API Key
 const API_KEY = "sk-voidai-KfIEuDbfbBtmSGVfCwWvqYWtVKbBjmHstZZF0kTu-EUEbhb_g9oc4iynoiF-0ZArm2tlm08mXQSdhkPepBYW7n6qJ-Rj0w9hdPwt6JGj7N69WWNuS5IwIbVgJlcr-if7_PG1DQ";
 
-// Models per task
+// Models
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
@@ -29,24 +29,19 @@ tabButtons.forEach(btn=>{
     });
 });
 
+// Send button
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
     if(!message && fileUpload.files.length === 0) return;
 
     appendMessage("user", message);
 
-    let selectedModel = Array.isArray(modelMap[currentTask]) ? modelMap[currentTask][0] : modelMap[currentTask];
+    const selectedModel = Array.isArray(modelMap[currentTask]) ? modelMap[currentTask][0] : modelMap[currentTask];
 
-    let body = {
-        model: selectedModel,
-        messages: [
-            {role:"system", content:"You are a helpful assistant."},
-            {role:"user", content: message}
-        ]
-    };
+    let body = { model: selectedModel, messages:[{role:"system",content:"You are a helpful assistant."},{role:"user",content:message}] };
 
     if(fileUpload.files.length>0){
-        body.files = [];
+        body.files=[];
         for(const file of fileUpload.files){
             const base64 = await toBase64(file);
             body.files.push({name:file.name, content:base64});
@@ -60,7 +55,7 @@ sendBtn.addEventListener("click", async () => {
             body: JSON.stringify(body)
         });
         const data = await res.json();
-        console.log(data); // debug output
+        console.log(data);
 
         let output = "No response";
         if(currentTask==="text"||currentTask==="code"||currentTask==="advanced") output = data.choices?.[0]?.message?.content || output;
@@ -82,11 +77,12 @@ sendBtn.addEventListener("click", async () => {
 function appendMessage(sender,text,task="text"){
     const bubble = document.createElement("div");
     bubble.classList.add("bubble",sender);
+    const timestamp = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
 
-    if(task==="code") bubble.innerHTML = `<pre><code>${text}</code></pre>`;
-    else if(task==="image") bubble.innerHTML = `<img src="${text}" alt="AI Image">`;
-    else if(task==="speech") bubble.innerHTML = `<audio controls src="${text}"></audio>`;
-    else bubble.textContent = text;
+    if(task==="code") bubble.innerHTML = `<pre><code>${text}</code></pre><small>${timestamp}</small>`;
+    else if(task==="image") bubble.innerHTML = `<img src="${text}" alt="AI Image"><small>${timestamp}</small>`;
+    else if(task==="speech") bubble.innerHTML = `<audio controls src="${text}"></audio><small>${timestamp}</small>`;
+    else bubble.innerHTML = `${text}<small>${timestamp}</small>`;
 
     chatBox.appendChild(bubble);
     chatBox.scrollTop = chatBox.scrollHeight;
