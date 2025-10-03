@@ -3,26 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nythera AI</title>
+<title>Nythera</title>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
 <div class="chat-container">
-    <header>Nythera AI</header>
+    <header>Nythera</header>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-button active" data-task="text">Text</button>
+        <button class="tab-button" data-task="code">Code</button>
+        <button class="tab-button" data-task="image">Image</button>
+        <button class="tab-button" data-task="embedding">Embeddings</button>
+        <button class="tab-button" data-task="speech">TTS</button>
+        <button class="tab-button" data-task="transcription">Transcription</button>
+        <button class="tab-button" data-task="advanced">Advanced</button>
+    </div>
+
     <div id="chat" class="chat-box"></div>
+
     <div class="input-area">
-        <select id="task">
-            <option value="text">Text Chat</option>
-            <option value="code">Code Generation</option>
-            <option value="image">Image Generation</option>
-            <option value="embedding">Embeddings</option>
-            <option value="speech">Text-to-Speech</option>
-            <option value="transcription">Transcription</option>
-            <option value="advanced">Advanced Instruct</option>
-        </select>
-        <input type="file" id="fileUpload" multiple>
         <textarea id="userInput" placeholder="Type your message..."></textarea>
+        <input type="file" id="fileUpload" multiple>
         <button id="sendBtn">Send</button>
     </div>
 </div>
