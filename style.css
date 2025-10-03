@@ -1,111 +1,117 @@
+/* General */
 body {
-    font-family: 'Segoe UI', sans-serif;
-    background:#0d0d1a;
-    color:#fff;
     margin:0;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
+    font-family:'Segoe UI',sans-serif;
+    background:#0b0b17;
+    color:#fff;
 }
 
-.chat-container {
-    width:520px;
-    max-width:95%;
-    background:#1b1b2e;
-    border-radius:20px;
+.container {
+    display:flex;
+    height:100vh;
+    width:100%;
+}
+
+/* Sidebar */
+.sidebar {
+    width:200px;
+    background:#1c1c2c;
     display:flex;
     flex-direction:column;
-    overflow:hidden;
-    box-shadow:0 0 30px rgba(110,110,255,0.5);
+    padding:20px 10px;
+    box-shadow:2px 0 10px rgba(0,0,0,0.5);
 }
-
-header {
-    background: linear-gradient(90deg,#6e6eff,#ff6eff,#00ffe0,#ff6eff);
-    background-size:300% 300%;
-    padding:20px;
-    font-weight:bold;
+.sidebar h2 {
+    margin-bottom:20px;
     text-align:center;
-    font-size:1.5rem;
-    color:#fff;
-    animation:gradientGlow 6s ease infinite;
+    color:#6e6eff;
 }
-@keyframes gradientGlow{
-    0%{background-position:0% 50%;}
-    50%{background-position:100% 50%;}
-    100%{background-position:0% 50%;}
-}
-
-.tabs {
+.sidebar nav {
     display:flex;
-    background:#111127;
+    flex-direction:column;
+    gap:10px;
 }
 .tab-button {
-    flex:1;
-    padding:10px 5px;
+    padding:10px;
     border:none;
+    border-radius:10px;
     background:#111127;
     color:#ccc;
     cursor:pointer;
-    font-weight:bold;
+    text-align:left;
     transition:0.2s;
 }
 .tab-button.active {
     background:#6e6eff;
     color:#fff;
 }
+.tab-button:hover {background:#333366;}
 
-.chat-box{
+/* Chat Area */
+.chat-area {
     flex:1;
-    padding:15px;
+    display:flex;
+    flex-direction:column;
+    background:#111127;
+}
+.chat-box {
+    flex:1;
+    padding:20px;
     overflow-y:auto;
     display:flex;
     flex-direction:column;
-    gap:10px;
-    background:#1a1a2d;
+    gap:15px;
 }
-
-.bubble{
-    padding:12px 18px;
-    border-radius:18px;
-    max-width:75%;
+.bubble {
+    padding:15px 20px;
+    border-radius:20px;
+    max-width:70%;
     word-wrap:break-word;
+    box-shadow:0 2px 10px rgba(0,0,0,0.5);
     position:relative;
-    box-shadow:0 2px 8px rgba(0,0,0,0.3);
 }
-.bubble.user{background:#6e6eff;align-self:flex-end;color:#fff;}
-.bubble.bot{background:#4444aa;align-self:flex-start;color:#fff;}
+.bubble.user {align-self:flex-end;background:#6e6eff;color:#fff;}
+.bubble.bot {align-self:flex-start;background:#4444aa;color:#fff;}
+.bubble small {
+    display:block;
+    font-size:0.7rem;
+    margin-top:5px;
+    color:rgba(255,255,255,0.6);
+}
 
-.input-area{
+/* Input Area */
+.input-area {
     display:flex;
     flex-direction:column;
-    padding:12px;
-    gap:6px;
-    background:#111127;
+    padding:15px;
+    background:#1b1b2e;
+    gap:10px;
 }
-textarea{
+textarea {
+    width:100%;
     resize:none;
     padding:12px;
-    border-radius:12px;
+    border-radius:15px;
     border:none;
-    width:100%;
-    height:55px;
+    height:60px;
     background:#111127;
     color:#fff;
+    font-size:1rem;
 }
-button{
+button {
     padding:12px;
-    border-radius:12px;
     border:none;
+    border-radius:15px;
     background:linear-gradient(90deg,#6e6eff,#ff6eff);
     color:#fff;
     font-weight:bold;
     cursor:pointer;
-    transition:transform 0.2s;
+    transition:0.2s;
 }
-button:hover{transform:scale(1.05);}
-input[type=file]{padding:6px;border-radius:12px;border:none;background:#111127;color:#fff;}
+button:hover {transform:scale(1.05);}
+input[type=file]{border:none;padding:6px;border-radius:12px;background:#111127;color:#fff;}
 
-audio{width:100%;margin-top:5px;}
-img{max-width:100%;border-radius:12px;margin-top:5px;}
-pre{background:rgba(0,0,0,0.4);padding:10px;border-radius:10px;overflow-x:auto;}
+/* Media inside bubble */
+img {max-width:100%;border-radius:12px;margin-top:5px;}
+pre {background:rgba(0,0,0,0.4);padding:10px;border-radius:12px;overflow-x:auto;}
+audio {width:100%;margin-top:5px;}
