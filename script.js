@@ -1,32 +1,41 @@
 const chatBox = document.getElementById("chat");
 const sendBtn = document.getElementById("sendBtn");
 const userInput = document.getElementById("userInput");
-const taskSelect = document.getElementById("task");
 const fileUpload = document.getElementById("fileUpload");
+const tabButtons = document.querySelectorAll(".tab-button");
 
-// Single VoidAI API Key
-const API_KEY = "YOUR_API_KEY";
+let currentTask = "text";
+
+// Single API Key
+const API_KEY = "sk-voidai-KfIEuDbfbBtmSGVfCwWvqYWtVKbBjmHstZZF0kTu-EUEbhb_g9oc4iynoiF-0ZArm2tlm08mXQSdhkPepBYW7n6qJ-Rj0w9hdPwt6JGj7N69WWNuS5IwIbVgJlcr-if7_PG1DQ";
 
 // Models per task
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
-    image: ["dall-e-3","gpt-image-1"], // multiple image models
+    image: ["dall-e-3","gpt-image-1"],
     embedding: "text-embedding-3-large",
     speech: "tts-1",
     transcription: "whisper-1",
     advanced: ["llama-4-maverick-17b-128e-instruct","kimi-k2-instruct","grok-3","claude-3-haiku-20240307"]
 };
 
+// Tab switching
+tabButtons.forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+        tabButtons.forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        currentTask = btn.dataset.task;
+    });
+});
+
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
-    const task = taskSelect.value;
     if(!message && fileUpload.files.length === 0) return;
 
     appendMessage("user", message);
 
-    // Select model (first if multiple)
-    const selectedModel = Array.isArray(modelMap[task]) ? modelMap[task][0] : modelMap[task];
+    let selectedModel = Array.isArray(modelMap[currentTask]) ? modelMap[currentTask][0] : modelMap[currentTask];
 
     let body = {
         model: selectedModel,
@@ -36,41 +45,38 @@ sendBtn.addEventListener("click", async () => {
         ]
     };
 
-    // Handle file uploads
-    if(fileUpload.files.length > 0){
+    if(fileUpload.files.length>0){
         body.files = [];
         for(const file of fileUpload.files){
             const base64 = await toBase64(file);
-            body.files.push({ name:file.name, content:base64 });
+            body.files.push({name:file.name, content:base64});
         }
     }
 
     try{
-        const res = await fetch("https://api.voidai.app/v1/chat/completions", {
+        const res = await fetch("https://api.voidai.app/v1/chat/completions",{
             method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization": `Bearer ${API_KEY}`
-            },
+            headers:{"Content-Type":"application/json","Authorization":`Bearer ${API_KEY}`},
             body: JSON.stringify(body)
         });
         const data = await res.json();
+        console.log(data); // debug output
+
         let output = "No response";
+        if(currentTask==="text"||currentTask==="code"||currentTask==="advanced") output = data.choices?.[0]?.message?.content || output;
+        if(currentTask==="image") output = data.choices?.[0]?.image_url || output;
+        if(currentTask==="embedding") output = JSON.stringify(data.data||{});
+        if(currentTask==="speech") output = data.choices?.[0]?.audio_url || null;
+        if(currentTask==="transcription") output = data.choices?.[0]?.text || output;
 
-        if(task === "text" || task === "code" || task === "advanced") output = data.choices?.[0]?.message?.content || output;
-        if(task === "image") output = data.choices?.[0]?.image_url || output;
-        if(task === "embedding") output = JSON.stringify(data.data || {});
-        if(task === "speech") output = data.choices?.[0]?.audio_url || null;
-        if(task === "transcription") output = data.choices?.[0]?.text || output;
-
-        appendMessage("bot", output, task);
+        appendMessage("bot", output, currentTask);
     }catch(err){
         console.error(err);
         appendMessage("bot","Error contacting API.");
     }
 
-    userInput.value = "";
-    fileUpload.value = "";
+    userInput.value="";
+    fileUpload.value="";
 });
 
 function appendMessage(sender,text,task="text"){
@@ -90,7 +96,7 @@ function toBase64(file){
     return new Promise((resolve,reject)=>{
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result.split(",")[1]);
-        reader.onerror = err => reject(err);
+        reader.onload=()=>resolve(reader.result.split(",")[1]);
+        reader.onerror=err=>reject(err);
     });
 }
