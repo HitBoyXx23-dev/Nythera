@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nythera AI</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="chat-container">
+    <header>Nythera AI</header>
+    <div id="chat" class="chat-box"></div>
+    <div class="input-area">
+        <select id="task">
+            <option value="text">Text Chat</option>
+            <option value="code">Code Generation</option>
+            <option value="image">Image Generation</option>
+            <option value="embedding">Embeddings</option>
+            <option value="speech">Text-to-Speech</option>
+            <option value="transcription">Transcription</option>
+            <option value="advanced">Advanced Instruct</option>
+        </select>
+        <input type="file" id="fileUpload" multiple>
+        <textarea id="userInput" placeholder="Type your message..."></textarea>
+        <button id="sendBtn">Send</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
