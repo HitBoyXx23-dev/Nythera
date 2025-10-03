@@ -7,27 +7,31 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="chat-container">
-    <header>Nythera</header>
+<div class="container">
 
-    <!-- Tabs -->
-    <div class="tabs">
-        <button class="tab-button active" data-task="text">Text</button>
-        <button class="tab-button" data-task="code">Code</button>
-        <button class="tab-button" data-task="image">Image</button>
-        <button class="tab-button" data-task="embedding">Embeddings</button>
-        <button class="tab-button" data-task="speech">TTS</button>
-        <button class="tab-button" data-task="transcription">Transcription</button>
-        <button class="tab-button" data-task="advanced">Advanced</button>
-    </div>
+    <!-- Sidebar / Tabs -->
+    <aside class="sidebar">
+        <h2>Nythera</h2>
+        <nav>
+            <button class="tab-button active" data-task="text">Text Chat</button>
+            <button class="tab-button" data-task="code">Code Gen</button>
+            <button class="tab-button" data-task="image">Images</button>
+            <button class="tab-button" data-task="embedding">Embeddings</button>
+            <button class="tab-button" data-task="speech">TTS</button>
+            <button class="tab-button" data-task="transcription">Transcription</button>
+            <button class="tab-button" data-task="advanced">Advanced</button>
+        </nav>
+    </aside>
 
-    <div id="chat" class="chat-box"></div>
-
-    <div class="input-area">
-        <textarea id="userInput" placeholder="Type your message..."></textarea>
-        <input type="file" id="fileUpload" multiple>
-        <button id="sendBtn">Send</button>
-    </div>
+    <!-- Chat area -->
+    <main class="chat-area">
+        <div id="chat" class="chat-box"></div>
+        <div class="input-area">
+            <textarea id="userInput" placeholder="Type your message..."></textarea>
+            <input type="file" id="fileUpload" multiple>
+            <button id="sendBtn">Send</button>
+        </div>
+    </main>
 </div>
 
 <script src="script.js"></script>
