@@ -6,9 +6,10 @@ const tabButtons = document.querySelectorAll(".tab-button");
 
 let currentTask = "text";
 
-const API_KEY = "sk-voidai-A_deJiEm5lImmyrDWdFI3cA_YskQUEORXLOeDwXvHTZJmxNnHV2vZAm3YGwazezFLk4sZVa0kpVPZzH7KAisSXms18Lk24HEMtBttXM9ANDIEkXsmwtEydAkiQQ6XUxc5yRD8Q";
+// ⚠️ Use your own API key securely
+const API_KEY = "sk-voidai-A_deJiEm5lImmyrDWdFI3cA_YskQUEORXLOeDwXvHTZJmxNnHV2vZAm3YGwazezFLk4sZVa0kpVPZzH7KAisSXms18Lk24HEMtBttXM9ANDIEkXsmwtEydAkiQQ6XUxc5yRD8Q"; 
 
-// Models
+// Keep your original model mapping
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
@@ -20,9 +21,9 @@ const modelMap = {
 };
 
 // Tab switching
-tabButtons.forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-        tabButtons.forEach(b=>b.classList.remove("active"));
+tabButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+        tabButtons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
         currentTask = btn.dataset.task;
     });
@@ -31,38 +32,35 @@ tabButtons.forEach(btn=>{
 // Send message
 sendBtn.addEventListener("click", async () => {
     const message = userInput.value.trim();
-    if(!message && fileUpload.files.length===0) return;
+    if (!message && fileUpload.files.length === 0) return;
 
     appendMessage("user", message);
 
-    const selectedModel = Array.isArray(modelMap[currentTask]) ? modelMap[currentTask][0] : modelMap[currentTask];
+    const selectedModel = Array.isArray(modelMap[currentTask])
+        ? modelMap[currentTask][0]
+        : modelMap[currentTask];
 
     let body = {
         model: selectedModel,
-        messages:[
-            {role:"system", content:"You are a helpful assistant."},
-            {role:"user", content:message}
+        messages: [
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: message }
         ]
     };
 
-    // File uploads
-    if(fileUpload.files.length>0){
-        body.files=[];
-        for(const file of fileUpload.files){
-            const base64 = await toBase64(file);
-            body.files.push({name:file.name, content:base64});
-        }
-    }
-
-    try{
+    try {
         const res = await fetch("https://api.voidai.app/v1/chat/completions", {
-            method:"POST",
-            headers: {"Content-Type":"application/json","Authorization":`Bearer ${API_KEY}`},
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${API_KEY}`
+            },
             body: JSON.stringify(body)
         });
 
-        if(!res.ok){
-            appendMessage("bot",`HTTP Error: ${res.status}`);
+        if (!res.ok) {
+            const errText = await res.text();
+            appendMessage("bot", `HTTP Error ${res.status}: ${errText}`);
             return;
         }
 
@@ -71,42 +69,37 @@ sendBtn.addEventListener("click", async () => {
 
         let output = "No response";
 
-        if(currentTask==="text"||currentTask==="code"||currentTask==="advanced") output = data.choices?.[0]?.message?.content || output;
-        if(currentTask==="image") output = data.choices?.[0]?.image_url || output;
-        if(currentTask==="embedding") output = JSON.stringify(data.data||{});
-        if(currentTask==="speech") output = data.choices?.[0]?.audio_url || null;
-        if(currentTask==="transcription") output = data.choices?.[0]?.text || output;
+        if (["text","code","advanced"].includes(currentTask))
+            output = data.choices?.[0]?.message?.content || output;
+        else if (currentTask === "image")
+            output = data.choices?.[0]?.image_url || output;
+        else if (currentTask === "embedding")
+            output = JSON.stringify(data.data || {});
+        else if (currentTask === "speech")
+            output = data.choices?.[0]?.audio_url || null;
+        else if (currentTask === "transcription")
+            output = data.choices?.[0]?.text || output;
 
         appendMessage("bot", output, currentTask);
-
-    }catch(err){
+    } catch (err) {
         console.error(err);
-        appendMessage("bot","Error contacting API.");
+        appendMessage("bot", "Error contacting API.");
     }
 
-    userInput.value="";
-    fileUpload.value="";
+    userInput.value = "";
+    fileUpload.value = "";
 });
 
-function appendMessage(sender,text,task="text"){
+function appendMessage(sender, text, task = "text") {
     const bubble = document.createElement("div");
-    bubble.classList.add("bubble",sender);
-    const timestamp = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+    bubble.classList.add("bubble", sender);
+    const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-    if(task==="code") bubble.innerHTML = `<pre><code>${text}</code></pre><small>${timestamp}</small>`;
-    else if(task==="image") bubble.innerHTML = `<img src="${text}" alt="Image"><small>${timestamp}</small>`;
-    else if(task==="speech") bubble.innerHTML = `<audio controls src="${text}"></audio><small>${timestamp}</small>`;
+    if (task === "code") bubble.innerHTML = `<pre><code>${text}</code></pre><small>${timestamp}</small>`;
+    else if (task === "image") bubble.innerHTML = `<img src="${text}" alt="Image"><small>${timestamp}</small>`;
+    else if (task === "speech") bubble.innerHTML = `<audio controls src="${text}"></audio><small>${timestamp}</small>`;
     else bubble.innerHTML = `${text}<small>${timestamp}</small>`;
 
     chatBox.appendChild(bubble);
     chatBox.scrollTop = chatBox.scrollHeight;
-}
-
-function toBase64(file){
-    return new Promise((resolve,reject)=>{
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload=()=>resolve(reader.result.split(",")[1]);
-        reader.onerror=err=>reject(err);
-    });
 }
