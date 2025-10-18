@@ -13,11 +13,11 @@ const API_KEY = "sk-voidai-v2N9O4zjE_7X3lzcfn7clEqhnhvHS0Dqf3WwCCg3EEaW8Aif9vuHJ
 const modelMap = {
     text: "gpt-5-chat",
     code: "deepseek-v3.1",
-    image: ["gpt-image-1"],
+    image: "gpt-image-1",
     embedding: "text-embedding-3-large",
     speech: "tts-1",
     transcription: "whisper-1",
-    advanced: ["llama-4-maverick-17b-128e-instruct","kimi-k2-instruct","grok-3","claude-3-haiku-20240307"]
+    advanced: "llama-4-maverick-17b-128e-instruct","kimi-k2-instruct","grok-3","claude-3-haiku-20240307",
 };
 
 // Tab switching
