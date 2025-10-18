@@ -7,7 +7,7 @@ const tabButtons = document.querySelectorAll(".tab-button");
 let currentTask = "text";
 
 // ⚠️ Use your own API key securely
-const API_KEY = "sk-voidai-A_deJiEm5lImmyrDWdFI3cA_YskQUEORXLOeDwXvHTZJmxNnHV2vZAm3YGwazezFLk4sZVa0kpVPZzH7KAisSXms18Lk24HEMtBttXM9ANDIEkXsmwtEydAkiQQ6XUxc5yRD8Q"; 
+const API_KEY = "sk-voidai-0OodVbIn40398JsV6rYiQmwnZCLh05mei5ICgYUp_7nZySgmNdJpo2kJYMvFfd4mb3Deu5NRtM7Nv2NE1z7w_ddLCkAcE-7Mrm94aadHd5LWq4ectHmUsVHpbVEaZPEoRRvotw"; 
 
 // Keep your original model mapping
 const modelMap = {
